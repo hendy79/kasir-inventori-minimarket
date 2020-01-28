@@ -1,0 +1,25 @@
+DELIMITER $$
+
+USE `20170801143_db_uas`$$
+
+DROP PROCEDURE IF EXISTS `INSERT_INTO_transaksi`$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `INSERT_INTO_transaksi`(IN par DATETIME ,IN par1 TEXT ,IN par2 CHAR(20))
+BEGIN
+	DECLARE temp VARCHAR(16);
+	DECLARE temp1 DATETIME;
+	DECLARE yyyy VARCHAR(8);
+	DECLARE mm VARCHAR(4);
+	DECLARE dd VARCHAR(4);
+	DECLARE v_id VARCHAR(15); 
+	SET temp1 = par;
+	SET yyyy = (SELECT CONCAT('0000',YEAR(temp1)));
+	SET mm = (SELECT CONCAT('00',MONTH(temp1)));
+	SET dd = (SELECT CONCAT('00',DAY(temp1)));
+	SET temp = (SELECT CONCAT('00000000',get_increment_id_trans(temp1)));
+	SET v_id = (SELECT CONCAT('T',SUBSTRING(yyyy,LENGTH(yyyy)-3,4)
+	,SUBSTRING(mm,LENGTH(mm)-1,2),SUBSTRING(dd,LENGTH(dd)-1,2),SUBSTRING(temp,LENGTH(temp)-5,6)));
+	INSERT INTO transaksi VALUES (v_id,temp1,par1,par2);
+	END$$
+
+DELIMITER ;
